@@ -1,1051 +1,1428 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>✨ Happy Birthday Tanu! ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(to bottom, #1a0b2e, #2a0e56) fixed;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: white;
+      }
+
+      .container {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        padding: 2rem 1rem;
+      }
+
+      /* Loading Screen */
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a0b2e 0%, #2a0e56 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .loading-spinner {
+        width: 80px;
+        height: 80px;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #ff7bac;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 1.5rem;
+      }
+
+      .loading-text {
+        font-size: 2rem;
+        background: linear-gradient(
+          to right,
+          #ff7bac,
+          #ff9ac7,
+          #ffb8d9,
+          #ff9ac7,
+          #ff7bac
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shimmer 2s infinite;
+        background-size: 200% auto;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Stars Background */
+      .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .star {
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        animation: twinkle var(--duration) infinite ease-in-out;
+        opacity: var(--opacity);
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: var(--opacity);
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.2;
+          transform: scale(0.7);
+        }
+      }
+
+      /* Balloons */
+      .balloon {
+        position: fixed;
+        width: 40px;
+        height: 50px;
+        border-radius: 50%;
+        animation: balloonFloat 10s ease-in-out infinite;
+        bottom: -100px;
+        opacity: 0.8;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .balloon::before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.7);
+        bottom: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      @keyframes balloonFloat {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-50vh) rotate(10deg);
+        }
+        100% {
+          transform: translateY(-100vh) rotate(0deg);
+        }
+      }
+
+      /* Audio Control */
+      .audio-control {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        width: 3rem;
+        height: 3rem;
+        background-color: rgba(255, 123, 172, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .audio-control:hover {
+        background-color: rgba(255, 123, 172, 1);
+        transform: scale(1.1);
+      }
+
+      .audio-control svg {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      .audio-control.playing svg {
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      /* Scene Styles */
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+        padding: 2rem;
+      }
+
+      .scene.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* Welcome Scene */
+      .welcome-title {
+        font-family: "Dancing Script", cursive;
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        background: linear-gradient(to right, #ff7bac, #ff9ac7, #ffb8d9);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .welcome-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+        text-align: center;
+        max-width: 80%;
+        color: #f5f5f5;
+      }
+
+      .start-button {
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+        background: linear-gradient(45deg, #ff7bac, #ff5c8a);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(255, 123, 172, 0.4);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .start-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(255, 123, 172, 0.5);
+      }
+
+      .start-button svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        transition: transform 0.3s ease;
+      }
+
+      .start-button:hover svg {
+        transform: rotate(12deg);
+      }
+
+      /* Card Scene */
+      .card-scene-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
+      }
+
+      .envelope-wrapper {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        margin-bottom: 50px;
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      .envelope {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ff7bac 0%, #ff9ac7 100%);
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-radius: 5px;
+        transition: transform 0.5s ease;
+      }
+
+      .envelope-wrapper:hover .envelope {
+        transform: translateY(-10px);
+      }
+
+      .envelope-flap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ff9ac7 0%, #ff7bac 100%);
+        clip-path: polygon(0 0, 50% 50%, 100% 0);
+        transform-origin: top;
+        transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 2;
+      }
+
+      .envelope.open .envelope-flap {
+        transform: rotateX(180deg);
+      }
+
+      .envelope-content {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #ff7bac;
+        font-weight: bold;
+        font-size: 1.2rem;
+        z-index: 1;
+        border-radius: 3px;
+      }
+
+      .card-wrapper {
+        position: relative;
+        width: 280px;
+        height: 400px;
+        perspective: 1000px;
+        margin-top: -50px;
+        z-index: 5;
+      }
+
+      .card {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        border-radius: 10px;
+        box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
+        transform: translateY(20px) scale(0.9);
+        opacity: 0;
+        transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform-style: preserve-3d;
+        cursor: pointer;
+      }
+
+      .envelope-wrapper.open + .card-wrapper .card {
+        transform: translateY(-100px) rotateX(5deg);
+        opacity: 1;
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .card-back {
+        transform: rotateY(180deg);
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        overflow-y: auto;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
+
+      .card-back::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+      }
+
+      .card-title {
+        font-family: "Dancing Script", cursive;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .card-message {
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .card-front img {
+        width: 80%;
+        max-width: 200px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        transition: transform 0.5s ease;
+      }
+
+      .card-front img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Photo Gallery */
+      .photo-gallery {
+        width: 100%;
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .photo-container {
+        width: 100%;
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .photo:hover {
+        transform: scale(1.1);
+      }
+
+      .gallery-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 2rem;
+        height: 2rem;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+      }
+
+      .gallery-nav.prev {
+        left: 0.5rem;
+      }
+
+      .gallery-nav.next {
+        right: 0.5rem;
+      }
+
+      .gallery-nav svg {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      /* Cake Button */
+      .cake-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background: linear-gradient(45deg, #f6d365, #fda085);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(246, 211, 101, 0.4);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .cake-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(246, 211, 101, 0.5);
+      }
+
+      .cake-button svg {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      /* Cake Scene */
+      .cake-scene {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at bottom,
+          #1b2735 0%,
+          #090a0f 100%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease;
+        overflow-y: auto;
+        padding: 1rem;
+      }
+
+      .cake-scene.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .cake-title {
+        font-family: "Dancing Script", cursive;
+        font-size: 2.5rem;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #ffd700;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        text-align: center;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .cake-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        max-width: 90%;
+        color: #f5f5f5;
+      }
+
+      /* Video Container */
+      .video-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 1rem auto;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .video-placeholder {
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        background: linear-gradient(135deg, #2c3e50, #4ca1af);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+      }
+
+      .video-placeholder::before {
+        content: "🎬";
+        font-size: 3rem;
+        position: absolute;
+      }
+
+      /* Cake Styles */
+      .cake-container {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        margin: 1rem auto;
+        transform-style: preserve-3d;
+        transform: rotateX(10deg);
+        animation: cakeFloat 5s ease-in-out infinite;
+      }
+
+      @keyframes cakeFloat {
+        0%,
+        100% {
+          transform: rotateX(10deg) translateY(0);
+        }
+        50% {
+          transform: rotateX(10deg) translateY(-10px);
+        }
+      }
+
+      .cake {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+      }
+
+      .cake-base {
+        position: absolute;
+        width: 200px;
+        height: 80px;
+        background: linear-gradient(to right, #ff7bac, #ff5c8a, #ff7bac);
+        border-radius: 10px;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .cake-middle {
+        position: absolute;
+        width: 160px;
+        height: 70px;
+        background: linear-gradient(to right, #ff9ac7, #ff7bac, #ff9ac7);
+        border-radius: 10px;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .cake-top {
+        position: absolute;
+        width: 120px;
+        height: 50px;
+        background: linear-gradient(to right, #ffb8d9, #ff9ac7, #ffb8d9);
+        border-radius: 10px;
+        bottom: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .frosting {
+        position: absolute;
+        width: 210px;
+        height: 20px;
+        background: white;
+        border-radius: 10px;
+        bottom: 75px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+      }
+
+      .frosting-middle {
+        position: absolute;
+        width: 170px;
+        height: 15px;
+        background: white;
+        border-radius: 10px;
+        bottom: 145px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+      }
+
+      .candle {
+        position: absolute;
+        width: 10px;
+        height: 35px;
+        background: linear-gradient(to right, #a3c4f3, #8eecf5, #a3c4f3);
+        bottom: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        border-radius: 5px;
+      }
+
+      .flame {
+        position: absolute;
+        width: 20px;
+        height: 30px;
+        background: radial-gradient(
+          ellipse at bottom,
+          #ffdb58 0%,
+          #ff7f00 100%
+        );
+        border-radius: 50% 50% 20% 20%;
+        bottom: 235px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 4;
+        box-shadow: 0 0 20px #ff7f00, 0 0 40px #ffdb58;
+        animation: flicker 0.5s infinite alternate;
+      }
+
+      @keyframes flicker {
+        0% {
+          transform: translateX(-50%) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-50%) scale(0.9);
+          opacity: 0.8;
+        }
+      }
+
+      .decoration {
+        position: absolute;
+        border-radius: 50%;
+        z-index: 5;
+      }
+
+      /* Blow Button */
+      .blow-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.2rem;
+        background: linear-gradient(45deg, #00b09b, #96c93d);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
+        position: relative;
+        overflow: hidden;
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .blow-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0, 176, 155, 0.5);
+      }
+
+      .blow-button:disabled {
+        background: #cccccc;
+        transform: none;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      .back-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+      }
+
+      /* Message Box */
+      .message-box {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        max-width: 90%;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(0);
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .message-box.visible {
+        transform: scale(1);
+      }
+
+      /* Confetti */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0.7;
+        animation: confettiFall linear forwards;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      @keyframes confettiFall {
+        to {
+          transform: translateY(100vh) rotate(720deg);
+        }
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .welcome-title,
+        .cake-title {
+          font-size: 2.2rem;
         }
 
-        body {
-            background: linear-gradient(to bottom, #1a0b2e, #2a0e56) fixed;
-            min-height: 100vh;
-            overflow-x: hidden;
-            color: white;
-        }
-
-        .container {
-            width: 100%;
-            min-height: 100vh;
-            position: relative;
-            padding: 2rem 1rem;
-        }
-
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a0b2e 0%, #2a0e56 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-out;
-        }
-
-        .loading-spinner {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: #ff7bac;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 1.5rem;
-        }
-
-        .loading-text {
-            font-size: 2rem;
-            background: linear-gradient(to right, #ff7bac, #ff9ac7, #ffb8d9, #ff9ac7, #ff7bac);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: shimmer 2s infinite;
-            background-size: 200% auto;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Stars Background */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite ease-in-out;
-            opacity: var(--opacity);
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: var(--opacity); transform: scale(1); }
-            50% { opacity: 0.2; transform: scale(0.7); }
-        }
-
-        /* Balloons */
-        .balloon {
-            position: fixed;
-            width: 40px;
-            height: 50px;
-            border-radius: 50%;
-            animation: balloonFloat 10s ease-in-out infinite;
-            bottom: -100px;
-            opacity: 0.8;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .balloon::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.7);
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        @keyframes balloonFloat {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-50vh) rotate(10deg); }
-            100% { transform: translateY(-100vh) rotate(0deg); }
-        }
-
-        /* Audio Control */
-        .audio-control {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 50;
-            width: 3rem;
-            height: 3rem;
-            background-color: rgba(255, 123, 172, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .audio-control:hover {
-            background-color: rgba(255, 123, 172, 1);
-            transform: scale(1.1);
-        }
-
-        .audio-control svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        .audio-control.playing svg {
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Scene Styles */
-        .scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-            padding: 2rem;
-        }
-
-        .scene.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        /* Welcome Scene */
-        .welcome-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            background: linear-gradient(to right, #ff7bac, #ff9ac7, #ffb8d9);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .welcome-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2.5rem;
-            text-align: center;
-            max-width: 80%;
-            color: #f5f5f5;
-        }
-
-        .start-button {
-            padding: 1rem 2.5rem;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #ff7bac, #ff5c8a);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(255, 123, 172, 0.4);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .start-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(255, 123, 172, 0.5);
-        }
-
-        .start-button svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .start-button:hover svg {
-            transform: rotate(12deg);
-        }
-
-        /* Card Scene */
-        .card-scene-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            padding: 1rem;
+        .welcome-subtitle,
+        .cake-subtitle {
+          font-size: 1rem;
         }
 
         .envelope-wrapper {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            margin-bottom: 50px;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .envelope {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff7bac 0%, #ff9ac7 100%);
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-radius: 5px;
-            transition: transform 0.5s ease;
-        }
-
-        .envelope-wrapper:hover .envelope {
-            transform: translateY(-10px);
-        }
-
-        .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ff9ac7 0%, #ff7bac 100%);
-            clip-path: polygon(0 0, 50% 50%, 100% 0);
-            transform-origin: top;
-            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2;
-        }
-
-        .envelope.open .envelope-flap {
-            transform: rotateX(180deg);
-        }
-
-        .envelope-content {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: calc(100% - 20px);
-            height: calc(100% - 20px);
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #ff7bac;
-            font-weight: bold;
-            font-size: 1.2rem;
-            z-index: 1;
-            border-radius: 3px;
+          width: 250px;
+          height: 170px;
         }
 
         .card-wrapper {
-            position: relative;
-            width: 280px;
-            height: 400px;
-            perspective: 1000px;
-            margin-top: -50px;
-            z-index: 5;
+          width: 240px;
+          height: 350px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .welcome-title,
+        .cake-title {
+          font-size: 1.8rem;
         }
 
-        .card {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            border-radius: 10px;
-            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
-            transform: translateY(20px) scale(0.9);
-            opacity: 0;
-            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            cursor: pointer;
+        .welcome-subtitle,
+        .cake-subtitle {
+          font-size: 0.9rem;
+          max-width: 95%;
         }
 
-        .envelope-wrapper.open + .card-wrapper .card {
-            transform: translateY(-100px) rotateX(5deg);
-            opacity: 1;
+        .start-button,
+        .blow-button {
+          padding: 0.75rem 1.5rem;
+          font-size: 1rem;
         }
 
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .envelope-wrapper {
+          width: 220px;
+          height: 150px;
         }
 
-        .card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .card-back {
-            transform: rotateY(180deg);
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            overflow-y: auto;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-
-        .card-back::-webkit-scrollbar {
-            display: none;  /* Chrome, Safari, Opera */
+        .card-wrapper {
+          width: 220px;
+          height: 320px;
         }
 
         .card-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #333;
+          font-size: 1.7rem;
         }
 
         .card-message {
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #333;
-            margin-bottom: 20px;
+          font-size: 0.9rem;
         }
 
-        .card-front img {
-            width: 80%;
-            max-width: 200px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-            transition: transform 0.5s ease;
-        }
-
-        .card-front img:hover {
-            transform: scale(1.05);
-        }
-
-        /* Photo Gallery */
-        .photo-gallery {
-            width: 100%;
-            position: relative;
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .photo-container {
-            width: 100%;
-            height: 180px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .photo:hover {
-            transform: scale(1.1);
-        }
-
-        .gallery-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 2rem;
-            height: 2rem;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-        }
-
-        .gallery-nav.prev {
-            left: 0.5rem;
-        }
-
-        .gallery-nav.next {
-            right: 0.5rem;
-        }
-
-        .gallery-nav svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        /* Cake Button */
-        .cake-button {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            background: linear-gradient(45deg, #f6d365, #fda085);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(246, 211, 101, 0.4);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .cake-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(246, 211, 101, 0.5);
-        }
-
-        .cake-button svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        /* Cake Scene */
-        .cake-scene {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s ease;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-
-        .cake-scene.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .cake-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: #FFD700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-            text-align: center;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .cake-subtitle {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            max-width: 90%;
-            color: #f5f5f5;
-        }
-
-        /* Video Container */
-        .video-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 1rem auto;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .video-placeholder {
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            background: linear-gradient(135deg, #2c3e50, #4ca1af);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .video-placeholder::before {
-            content: '🎬';
-            font-size: 3rem;
-            position: absolute;
-        }
-
-        /* Cake Styles */
         .cake-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 1rem auto;
-            transform-style: preserve-3d;
-            transform: rotateX(10deg);
-            animation: cakeFloat 5s ease-in-out infinite;
+          width: 200px;
+          height: 200px;
         }
+      }
 
-        @keyframes cakeFloat {
-            0%, 100% { transform: rotateX(10deg) translateY(0); }
-            50% { transform: rotateX(10deg) translateY(-10px); }
+      /* Button Styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        font-weight: 500;
+        transition-property: all;
+        transition-duration: 0.3s;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #ff7bac, #ff5c8a);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        box-shadow: 0 10px 20px rgba(255, 123, 172, 0.4);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(255, 123, 172, 0.5);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #f6d365, #fda085);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        box-shadow: 0 10px 20px rgba(246, 211, 101, 0.4);
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(246, 211, 101, 0.5);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #00b09b, #96c93d);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
+      }
+
+      .btn-success:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0, 176, 155, 0.5);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+      }
+
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-icon svg {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      /* Fade In Animation */
+      .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-        .cake {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
+      /* Scale In Animation */
+      .scale-in {
+        animation: scaleIn 0.5s ease forwards;
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      /* Add to envelope styles */
+      .envelope-wrapper.open {
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.5s 0.5s; /* Added transition delay */
+      }
+      /* Update video container styles */
+      .video-container {
+        width: 100%;
+        max-width: 300px; /* Portrait-friendly width */
+        aspect-ratio: 9/16; /* For 1080x1920 video */
+        margin: 1rem auto;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .birthday-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      @media (max-width: 480px) {
+        /* Cake scene adjustments */
+        .cake-container {
+          width: 180px;
+          height: 180px;
+          margin: 0.5rem auto;
         }
 
         .cake-base {
-            position: absolute;
-            width: 200px;
-            height: 80px;
-            background: linear-gradient(to right, #ff7bac, #ff5c8a, #ff7bac);
-            border-radius: 10px;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+          width: 140px;
+          height: 60px;
         }
 
         .cake-middle {
-            position: absolute;
-            width: 160px;
-            height: 70px;
-            background: linear-gradient(to right, #ff9ac7, #ff7bac, #ff9ac7);
-            border-radius: 10px;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+          width: 110px;
+          height: 50px;
+          bottom: 60px;
         }
 
         .cake-top {
-            position: absolute;
-            width: 120px;
-            height: 50px;
-            background: linear-gradient(to right, #ffb8d9, #ff9ac7, #ffb8d9);
-            border-radius: 10px;
-            bottom: 150px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+          width: 80px;
+          height: 40px;
+          bottom: 110px;
         }
 
         .frosting {
-            position: absolute;
-            width: 210px;
-            height: 20px;
-            background: white;
-            border-radius: 10px;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+          width: 150px;
+          bottom: 55px;
         }
 
         .frosting-middle {
-            position: absolute;
-            width: 170px;
-            height: 15px;
-            background: white;
-            border-radius: 10px;
-            bottom: 145px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+          width: 120px;
+          bottom: 105px;
         }
 
         .candle {
-            position: absolute;
-            width: 10px;
-            height: 35px;
-            background: linear-gradient(to right, #a3c4f3, #8eecf5, #a3c4f3);
-            bottom: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            border-radius: 5px;
+          bottom: 150px;
         }
 
         .flame {
-            position: absolute;
-            width: 20px;
-            height: 30px;
-            background: radial-gradient(ellipse at bottom, #ffdb58 0%, #ff7f00 100%);
-            border-radius: 50% 50% 20% 20%;
-            bottom: 235px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-            box-shadow: 0 0 20px #ff7f00, 0 0 40px #ffdb58;
-            animation: flicker 0.5s infinite alternate;
+          bottom: 180px;
         }
 
-        @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1); opacity: 1; }
-            100% { transform: translateX(-50%) scale(0.9); opacity: 0.8; }
+        .cake-scene {
+          padding-top: 2rem;
+          justify-content: flex-start;
         }
 
-        .decoration {
-            position: absolute;
-            border-radius: 50%;
-            z-index: 5;
+        .cake-title {
+          font-size: 2rem;
+          margin: 0.5rem;
         }
 
-        /* Blow Button */
-        .blow-button {
-            padding: 0.75rem 1.5rem;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #00b09b, #96c93d);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
-            position: relative;
-            overflow: hidden;
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .cake-subtitle {
+          margin: 0.5rem;
         }
+      }
+      /* Modify cake-scene */
+      .cake-scene {
+        justify-content: center; /* Changed from flex-start */
+        padding: 2rem 1rem; /* Add padding */
+      }
 
-        .blow-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(0, 176, 155, 0.5);
-        }
+      /* Add video container margin */
+      .video-container {
+        margin: 2rem auto; /* Increased margin */
+        z-index: 1; /* Bring forward */
+      }
 
-        .blow-button:disabled {
-            background: #cccccc;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
+      /* Adjust cake positioning */
+      .cake-container {
+        margin: 1rem auto 3rem; /* Add bottom margin */
+        z-index: 0; /* Send backward */
+      }
+      /* Modify card-back */
+      .card-back {
+        padding: 15px; /* Reduced padding */
+        justify-content: flex-start; /* Align to top */
+      }
 
-        .back-button {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
+      .card-message {
+        font-size: 0.9rem; /* Smaller font */
+        line-height: 1.4; /* Tighter line height */
+        margin-bottom: 15px; /* Reduced margin */
+        overflow-y: auto; /* Add scroll if needed */
+        max-height: 150px; /* Limit height */
+      }
+      /* Add to card-front img */
+      .card-front img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        margin: 10px 0;
+      }
+      /* Add this new CSS rule */
+      .cake-scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem; /* Adds space between elements */
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
 
-        .back-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
+      /* Modify video container */
+      .video-container {
+        order: 1; /* Makes video appear first */
+        margin: 1rem auto;
+        z-index: 2;
+      }
 
-        /* Message Box */
-        .message-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-            max-width: 90%;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: scale(0);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+      /* Modify cake container */
+      .cake-container {
+        order: 2; /* Makes cake appear after video */
+        margin: 1rem auto;
+        z-index: 1;
+      }
+      /* Replace existing .card-back styles with: */
+      .card-back {
+        transform: rotateY(180deg);
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        padding: 15px;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+      }
 
-        .message-box.visible {
-            transform: scale(1);
-        }
+      /* Add this new rule */
+      .card-message {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #333;
+        margin: 10px 0;
+        padding: 0 10px;
+        overflow-y: auto;
+        max-height: 120px;
+        width: 100%;
+        text-align: center;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .cake-scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem; /* Adds space between elements */
+        padding: 2rem 1rem;
+        overflow-y: auto; /* Allow scrolling if content overflows */
+      }
+      .video-container,
+      .birthday-video {
+        width: 100%;
+        max-width: 300px; /* Adjust width as needed */
+        aspect-ratio: 9/16; /* Maintain portrait orientation */
+        object-fit: contain; /* Ensures video fits without stretching */
+        margin: 1rem auto;
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
 
-        /* Confetti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            opacity: 0.7;
-            animation: confettiFall linear forwards;
-            pointer-events: none;
-            z-index: 1000;
-        }
+      .birthday-video {
+        max-height: 50vh; /* Limit height to 50% of viewport height */
+      }
+      .cake-container {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        margin: 1rem auto 3rem; /* Add more bottom margin */
+        z-index: 1;
+      }
+      .cake-scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 1rem; /* Space between elements */
+        padding: 2rem 1rem 6rem; /* Add extra padding at bottom */
+        min-height: 100vh; /* Full viewport height */
+        position: relative; /* For absolute positioning of buttons */
+        overflow-y: auto; /* Scrollable if content overflows */
+      }
 
-        @keyframes confettiFall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
-            }
-        }
+      .cake-container {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        margin: 1rem auto 2rem; /* Reduced bottom margin */
+        z-index: 1;
+      }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .welcome-title, .cake-title {
-                font-size: 2.2rem;
-            }
-
-            .welcome-subtitle, .cake-subtitle {
-                font-size: 1rem;
-            }
-
-            .envelope-wrapper {
-                width: 250px;
-                height: 170px;
-            }
-
-            .card-wrapper {
-                width: 240px;
-                height: 350px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .welcome-title, .cake-title {
-                font-size: 1.8rem;
-            }
-
-            .welcome-subtitle, .cake-subtitle {
-                font-size: 0.9rem;
-                max-width: 95%;
-            }
-
-            .start-button, .blow-button {
-                padding: 0.75rem 1.5rem;
-                font-size: 1rem;
-            }
-
-            .envelope-wrapper {
-                width: 220px;
-                height: 150px;
-            }
-
-            .card-wrapper {
-                width: 220px;
-                height: 320px;
-            }
-
-            .card-title {
-                font-size: 1.7rem;
-            }
-
-            .card-message {
-                font-size: 0.9rem;
-            }
-
-            .cake-container {
-                width: 200px;
-                height: 200px;
-            }
-        }
-
-        /* Button Styles */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 9999px;
-            font-weight: 500;
-            transition-property: all;
-            transition-duration: 0.3s;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #ff7bac, #ff5c8a);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            box-shadow: 0 10px 20px rgba(255, 123, 172, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(255, 123, 172, 0.5);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(45deg, #f6d365, #fda085);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            box-shadow: 0 10px 20px rgba(246, 211, 101, 0.4);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(246, 211, 101, 0.5);
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, #00b09b, #96c93d);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 25px rgba(0, 176, 155, 0.5);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 0.75rem 1.5rem;
-        }
-
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .btn-icon {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-icon svg {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        /* Fade In Animation */
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Scale In Animation */
-        .scale-in {
-            animation: scaleIn 0.5s ease forwards;
-        }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        /* Add to envelope styles */
-.envelope-wrapper.open {
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.5s 0.5s; /* Added transition delay */
+      /* Button container to ensure buttons are always at bottom */
+      .cake-scene-buttons {
+        position: fixed;
+        bottom: 2rem;
+        left: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 1rem;
+        z-index: 10; /* Ensure buttons are above other content */
+      }
+      .cake-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem; /* Space between elements */
+    padding: 2rem 1rem 4rem; /* Bottom padding to ensure buttons have space */
+    min-height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Scrollable if content overflows */
 }
-/* Update video container styles */
-.video-container {
+
+.cake-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 1rem auto 2rem; /* Margin below cake */
+    z-index: 1;
+}
+
+.cake-scene-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     width: 100%;
-    max-width: 300px; /* Portrait-friendly width */
-    aspect-ratio: 9/16; /* For 1080x1920 video */
-    margin: 1rem auto;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    padding: 0 1rem;
+    margin-top: 1rem; /* Space above buttons */
+}
+css.cake-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem; /* Space between elements */
+    padding: 2rem 1rem 4rem; /* Bottom padding to ensure buttons have space */
+    min-height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Scrollable if content overflows */
+}
+
+.cake-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 1rem auto 1rem; /* Reduced bottom margin */
+    z-index: 1;
+}
+
+.cake-scene-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0 1rem;
+    margin-top: 0; /* Remove fixed positioning */
+}
+      /* Add this media query */
+      @media (max-width: 480px) {
+        .birthday-video {
+          max-width: 90vw;
+          max-height: 40vh;
+        }
+
+        .cake-container {
+          width: 200px;
+          height: 200px;
+          margin: 0.5rem auto 2rem;
+        }
+
+        .cake-title,
+        .cake-subtitle {
+          text-align: center;
+          margin: 0.5rem;
+        }
+
+        .blow-button,
+        .back-button {
+          margin: 0.5rem;
+        }
+        .cake-scene {
+          padding: 1rem 1rem 8rem; /* Even more bottom padding for smaller screens */
+        }
+
+        .cake-scene-buttons {
+          bottom: 1rem;
+        }
+
+        .cake-container {
+          width: 200px;
+          height: 200px;
+          margin: 0.5rem auto 2rem;
+        }
+        .cake-scene {
+        padding: 1rem 1rem 2rem; /* Reduced bottom padding */
+        }
+
+        .cake-container {
+            width: 200px;
+            height: 200px;
+            margin: 0.5rem auto 1.5rem;
+        }
+
+        .cake-scene-buttons {
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .blow-button, .back-button {
+            width: 90%; /* Make buttons wider on small screens */
+            max-width: 300px;
+        }
+         .cake-container {
+        width: 200px;
+        height: 200px;
+        margin: 0.5rem auto 0.5rem;
+    }
+
+    .cake-scene-buttons {
+        gap: 0.75rem;
+        margin-top: 0;
+    }
+
+    .blow-button, 
+    .back-button {
+        width: 90%; /* Make buttons wider on small screens */
+        max-width: 300px;
+    }
+    .cake-scene-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0 1rem;
+    margin-top: 2rem; /* Space between cake and buttons */
+}
+      }
+      .cake-scene .cake-title {
+    margin-bottom: 0.5rem;
+}
+
+.cake-scene .cake-subtitle {
+    margin-bottom: 1rem;
+    text-align: center;
+    max-width: 90%;
 }
 
 .birthday-video {
     width: 100%;
+    max-width: 300px;
+    aspect-ratio: 9/16;
+    object-fit: contain;
+    margin: 1rem auto;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+.cake-scene-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0 1rem;
+    margin-top: 2rem; /* Space between cake and buttons */
+}
+      /* Modify card-wrapper */
+      /* .card-wrapper {
+    position: relative;
+    width: 280px;
+    height: 420px; 
+    perspective: 1000px;
+    margin-top: -50px;
+    z-index: 5;
+}
+
+
+.card-inner {
+    position: relative;
+    width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-@media (max-width: 480px) {
-    /* Cake scene adjustments */
-    .cake-container {
-        width: 180px;
-        height: 180px;
-        margin: 0.5rem auto;
-    }
+    transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden; 
+} */
 
-    .cake-base {
-        width: 140px;
-        height: 60px;
-    }
-
-    .cake-middle {
-        width: 110px;
-        height: 50px;
-        bottom: 60px;
-    }
-
-    .cake-top {
-        width: 80px;
-        height: 40px;
-        bottom: 110px;
-    }
-
-    .frosting {
-        width: 150px;
-        bottom: 55px;
-    }
-
-    .frosting-middle {
-        width: 120px;
-        bottom: 105px;
-    }
-
-    .candle {
-        bottom: 150px;
-    }
-
-    .flame {
-        bottom: 180px;
-    }
-
-    .cake-scene {
-        padding-top: 2rem;
-        justify-content: flex-start;
-    }
-
-    .cake-title {
-        font-size: 2rem;
-        margin: 0.5rem;
-    }
-
-    .cake-subtitle {
-        margin: 0.5rem;
-    }
-}
-/* Modify cake-scene */
-.cake-scene {
-    justify-content: center; /* Changed from flex-start */
-    padding: 2rem 1rem; /* Add padding */
-}
-
-/* Add video container margin */
-.video-container {
-    margin: 2rem auto; /* Increased margin */
-    z-index: 1; /* Bring forward */
-}
-
-/* Adjust cake positioning */
-.cake-container {
-    margin: 1rem auto 3rem; /* Add bottom margin */
-    z-index: 0; /* Send backward */
-}
-/* Modify card-back */
-.card-back {
-    padding: 15px; /* Reduced padding */
-    justify-content: flex-start; /* Align to top */
-}
-
-.card-message {
-    font-size: 0.9rem; /* Smaller font */
-    line-height: 1.4; /* Tighter line height */
-    margin-bottom: 15px; /* Reduced margin */
-    overflow-y: auto; /* Add scroll if needed */
-    max-height: 150px; /* Limit height */
-}
-/* Add to card-front img */
-.card-front img {
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-    margin: 10px 0;
-}
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <p class="loading-text">Preparing Tanu's surprise...</p>
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Preparing Tanu's surprise...</p>
     </div>
 
     <!-- Stars Background -->
@@ -1066,457 +1443,551 @@
     </button> -->
 
     <div class="container">
-        <!-- Welcome Scene -->
-        <div class="scene active" id="welcomeScene">
-            <h1 class="welcome-title fade-in">✨ Special Surprise for Tanu! ✨</h1>
-            <p class="welcome-subtitle fade-in">Since our meetings have gone digital, I've created something magical just for you! Click below to unwrap your virtual birthday surprise for May 13th - "mein tera" day!</p>
-            <button class="btn btn-primary btn-icon fade-in" id="startButton">
-                Begin the Magic!
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"></path>
-                    <path d="M16.5 9.4 7.55 4.24"></path>
-                    <polyline points="3.29 7 12 12 20.71 7"></polyline>
-                    <polyline points="12 22 12 12"></polyline>
-                    <circle cx="18.5" cy="15.5" r="2.5"></circle>
-                    <path d="M20.27 17.27 22 19"></path>
-                </svg>
-            </button>
-        </div>
+      <!-- Welcome Scene -->
+      <div class="scene active" id="welcomeScene">
+        <h1 class="welcome-title fade-in">✨ Special Surprise for Tanu! ✨</h1>
+        <p class="welcome-subtitle fade-in">
+          Since our meetings have gone digital, I've created something magical
+          just for you! Click below to unwrap your virtual birthday surprise for
+          May 13th - "mein tera" day!
+        </p>
+        <button class="btn btn-primary btn-icon fade-in" id="startButton">
+          Begin the Magic!
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"
+            ></path>
+            <path d="M16.5 9.4 7.55 4.24"></path>
+            <polyline points="3.29 7 12 12 20.71 7"></polyline>
+            <polyline points="12 22 12 12"></polyline>
+            <circle cx="18.5" cy="15.5" r="2.5"></circle>
+            <path d="M20.27 17.27 22 19"></path>
+          </svg>
+        </button>
+      </div>
 
-        <!-- Card Scene -->
-        <div class="scene" id="cardScene">
-            <div class="card-scene-container">
-                <div class="envelope-wrapper" id="envelopeWrapper">
-                    <div class="envelope" id="envelope">
-                        <div class="envelope-flap"></div>
-                        <div class="envelope-content">Click to open!</div>
-                    </div>
+      <!-- Card Scene -->
+      <div class="scene" id="cardScene">
+        <div class="card-scene-container">
+          <div class="envelope-wrapper" id="envelopeWrapper">
+            <div class="envelope" id="envelope">
+              <div class="envelope-flap"></div>
+              <div class="envelope-content">Click to open!</div>
+            </div>
+          </div>
+          <div class="card-wrapper" id="cardWrapper">
+            <div class="card" id="card">
+              <div class="card-inner">
+                <div class="card-front">
+                  <h2 class="card-title">Happy Birthday Tanu! 🎉</h2>
+                  <img
+                    src="bd1.jpg"
+                    alt="Birthday Gift"
+                  />
+                  <p class="card-message">
+                    Click to flip and see your special message!
+                  </p>
                 </div>
-                <div class="card-wrapper" id="cardWrapper">
-                    <div class="card" id="card">
-                        <div class="card-inner">
-                            <div class="card-front">
-                                <h2 class="card-title">Happy Birthday Tanu! 🎉</h2>
-                                <img src="https://i.pinimg.com/originals/e9/e6/8f/e9e68f2c3f84e89f7be789f9c5ca8ab0.png" alt="Birthday Gift">
-                                <p class="card-message">Click to flip and see your special message!</p>
-                            </div>
-                            <div class="card-back">
-                                <h2 class="card-title">Dear Tanu,</h2>
-                                <p class="card-message">
+                <div class="card-back">
+                  <h2 class="card-title">Dear Tanu,</h2>
+                  <h3 class="card-title">
+                    On your special day, I wanted to create something as unique
+                    as our friendship! Even though we can't celebrate in person,
+                    this virtual surprise is packed with all my love and wishes.
+                    May 13th - "mein tera" - is a perfect day to celebrate you!
+                  </h3>
+                  <!-- <p class="card-message">
                                     On your special day, I wanted to create something as unique as our friendship!
                                     Even though we can't celebrate in person, this virtual surprise is packed with all my love and wishes.
                                     May 13th - "mein tera" - is a perfect day to celebrate you!
-                                </p>
-                                
-                                <div class="photo-gallery" id="photoGallery">
-                                    <div class="photo-container">
-                                        <img class="photo" id="currentPhoto" src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80" alt="Memory">
-                                    </div>
-                                    <button class="gallery-nav prev" id="prevPhoto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="15 18 9 12 15 6"></polyline>
-                                        </svg>
-                                    </button>
-                                    <button class="gallery-nav next" id="nextPhoto">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <button class="btn btn-secondary btn-icon" id="cakeButton">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"></path>
-                                        <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"></path>
-                                        <path d="M2 21h20"></path>
-                                        <path d="M7 8v2"></path>
-                                        <path d="M12 8v2"></path>
-                                        <path d="M17 8v2"></path>
-                                        <path d="M7 4h.01"></path>
-                                        <path d="M12 4h.01"></path>
-                                        <path d="M17 4h.01"></path>
-                                    </svg>
-                                    Time for cake! (And it's not a lie!)
-                                </button>
-                            </div>
-                        </div>
+                                </p> -->
+
+                  <div class="photo-gallery" id="photoGallery">
+                    <div class="photo-container">
+                      <img
+                        class="photo"
+                        id="currentPhoto"
+                        src="samosa.jpg"
+                        alt="Memory"
+                      />
                     </div>
+                    <button class="gallery-nav prev" id="prevPhoto">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    <button class="gallery-nav next" id="nextPhoto">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <button class="btn btn-secondary btn-icon" id="cakeButton">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"
+                      ></path>
+                      <path
+                        d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"
+                      ></path>
+                      <path d="M2 21h20"></path>
+                      <path d="M7 8v2"></path>
+                      <path d="M12 8v2"></path>
+                      <path d="M17 8v2"></path>
+                      <path d="M7 4h.01"></path>
+                      <path d="M12 4h.01"></path>
+                      <path d="M17 4h.01"></path>
+                    </svg>
+                    Time for cake! (And it's not a lie!)
+                  </button>
                 </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cake Scene -->
+      <div class="cake-scene" id="cakeScene">
+        <h1 class="cake-title">Happy Birthday Tanu! 🎂</h1>
+        <p class="cake-subtitle">Here's a special message for you!</p>
+
+        <!-- Video Container (Now at the top) -->
+        <video class="birthday-video" controls playsinline>
+          <source src="Tanu-bd-video.mp4" type="video/mp4" />
+        </video>
+        <p class="cake-subtitle">Make a wish and blow out the candle!</p>
+
+        <!-- Cake Container -->
+        <div class="cake-container" id="cakeContainer">
+          <div class="cake">
+            <div class="cake-base"></div>
+            <div class="cake-middle"></div>
+            <div class="cake-top"></div>
+            <div class="frosting"></div>
+            <div class="frosting-middle"></div>
+            <div class="candle"></div>
+            <div class="flame" id="flame"></div>
+          </div>
         </div>
 
-        <!-- Cake Scene -->
-        <div class="cake-scene" id="cakeScene">
-            <h1 class="cake-title">Happy Birthday Tanu! 🎂</h1>
-            <p class="cake-subtitle">Here's a special message for you!</p>
-            
-            <!-- Video Container (Now at the top) -->
-            <div class="video-container">
-    <video class="birthday-video" controls playsinline>
-        <source src="Tanu-bd-video.mp4" type="video/mp4">
-    </video>
-</div>
-            <p class="cake-subtitle">Make a wish and blow out the candle!</p>
-            
-            <!-- Cake Container -->
-            <div class="cake-container" id="cakeContainer">
-                <div class="cake">
-                    <div class="cake-base"></div>
-                    <div class="cake-middle"></div>
-                    <div class="cake-top"></div>
-                    <div class="frosting"></div>
-                    <div class="frosting-middle"></div>
-                    <div class="candle"></div>
-                    <div class="flame" id="flame"></div>
-                </div>
-            </div>
-            
-            <!-- Message Box (Hidden initially) -->
-            <div class="message-box" id="messageBox">
-                <p>You know what's better than having a birthday? Having a best friend like you! Happy Birthday, Tanu! 🎉</p>
-            </div>
-            
-            <button class="btn btn-success btn-icon" id="blowButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M8.7 4.2A4 4 0 0 1 12 6a4 4 0 0 1-3.3 1.8"></path>
-                    <path d="M10.7 8.2A4 4 0 0 1 12 6a4 4 0 0 1-1.3-2.2"></path>
-                    <path d="M9.6 14.8a4 4 0 0 1 2.4 1.2 4 4 0 0 1 .6-3"></path>
-                    <path d="M14.3 16a4 4 0 0 1-1.4 1.9 4 4 0 0 1-3.2-2.3"></path>
-                    <path d="M7.9 9.2A4 4 0 0 1 12 6a4 4 0 0 1-4.1 3.2"></path>
-                    <path d="m5 8 2 2"></path>
-                    <path d="m3 14 4-4"></path>
-                    <path d="m6 18 2-2"></path>
-                    <path d="m10 20 2-2"></path>
-                    <path d="m15 15 5 5"></path>
-                    <path d="m17 3 3 3"></path>
-                    <path d="m12 18 6-6"></path>
-                    <path d="m19 9-2 2"></path>
-                </svg>
-                Blow Out the Candle!
-            </button>
-            <button class="btn btn-outline btn-icon" id="backButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m12 19-7-7 7-7"></path>
-                    <path d="M19 12H5"></path>
-                </svg>
-                Back to Card
-            </button>
+        <!-- Message Box (Hidden initially) -->
+        <div class="message-box" id="messageBox">
+          <p>
+            You know what's better than having a birthday? Having a best friend
+            like you! Happy Birthday, Tanu! 🎉
+          </p>
         </div>
+        <div class="cake-scene-buttons">
+          <button class="btn btn-success btn-icon" id="blowButton">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M8.7 4.2A4 4 0 0 1 12 6a4 4 0 0 1-3.3 1.8"></path>
+              <path d="M10.7 8.2A4 4 0 0 1 12 6a4 4 0 0 1-1.3-2.2"></path>
+              <path d="M9.6 14.8a4 4 0 0 1 2.4 1.2 4 4 0 0 1 .6-3"></path>
+              <path d="M14.3 16a4 4 0 0 1-1.4 1.9 4 4 0 0 1-3.2-2.3"></path>
+              <path d="M7.9 9.2A4 4 0 0 1 12 6a4 4 0 0 1-4.1 3.2"></path>
+              <path d="m5 8 2 2"></path>
+              <path d="m3 14 4-4"></path>
+              <path d="m6 18 2-2"></path>
+              <path d="m10 20 2-2"></path>
+              <path d="m15 15 5 5"></path>
+              <path d="m17 3 3 3"></path>
+              <path d="m12 18 6-6"></path>
+              <path d="m19 9-2 2"></path>
+            </svg>
+            Blow Out the Candle!
+          </button>
+          <button class="btn btn-outline btn-icon" id="backButton">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m12 19-7-7 7-7"></path>
+              <path d="M19 12H5"></path>
+            </svg>
+            Back to Card
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
-        // DOM Elements
-        const loadingScreen = document.getElementById('loadingScreen');
-        const welcomeScene = document.getElementById('welcomeScene');
-        const cardScene = document.getElementById('cardScene');
-        const cakeScene = document.getElementById('cakeScene');
-        const startButton = document.getElementById('startButton');
-        const envelopeWrapper = document.getElementById('envelopeWrapper');
-        const envelope = document.getElementById('envelope');
-        const cardWrapper = document.getElementById('cardWrapper');
-        const card = document.getElementById('card');
-        const cakeButton = document.getElementById('cakeButton');
-        const flame = document.getElementById('flame');
-        const blowButton = document.getElementById('blowButton');
-        const videoContainer = document.getElementById('videoContainer');
-        const videoPlaceholder = document.getElementById('videoPlaceholder');
-        const messageBox = document.getElementById('messageBox');
-        const backButton = document.getElementById('backButton');
-        const stars = document.getElementById('stars');
-        const bgMusic = document.getElementById('bgMusic');
-        const audioControl = document.getElementById('audioControl');
-        const currentPhoto = document.getElementById('currentPhoto');
-        const prevPhoto = document.getElementById('prevPhoto');
-        const nextPhoto = document.getElementById('nextPhoto');
+      // DOM Elements
+      const loadingScreen = document.getElementById("loadingScreen");
+      const welcomeScene = document.getElementById("welcomeScene");
+      const cardScene = document.getElementById("cardScene");
+      const cakeScene = document.getElementById("cakeScene");
+      const startButton = document.getElementById("startButton");
+      const envelopeWrapper = document.getElementById("envelopeWrapper");
+      const envelope = document.getElementById("envelope");
+      const cardWrapper = document.getElementById("cardWrapper");
+      const card = document.getElementById("card");
+      const cakeButton = document.getElementById("cakeButton");
+      const flame = document.getElementById("flame");
+      const blowButton = document.getElementById("blowButton");
+      const videoContainer = document.getElementById("videoContainer");
+      const videoPlaceholder = document.getElementById("videoPlaceholder");
+      const messageBox = document.getElementById("messageBox");
+      const backButton = document.getElementById("backButton");
+      const stars = document.getElementById("stars");
+      const audioControl = document.getElementById("audioControl");
+      const currentPhoto = document.getElementById("currentPhoto");
+      const prevPhoto = document.getElementById("prevPhoto");
+      const nextPhoto = document.getElementById("nextPhoto");
 
-        // State variables
-        let currentScene = 'welcome';
-        let audioPlaying = false;
-        let candleBlown = false;
-        let canBlowCandle = true;
-        let currentPhotoIndex = 0;
-        let microphoneStream = null;
+      // State variables
+      let currentScene = "welcome";
+      let audioPlaying = false;
+      let candleBlown = false;
+      let canBlowCandle = true;
+      let currentPhotoIndex = 0;
+      let microphoneStream = null;
 
-        // Photo gallery
-        const photos = [
-            'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
-            'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
-            'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
-            'https://images.unsplash.com/photo-1496275068113-fff8c90750d1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
-            'https://images.unsplash.com/photo-1508511267-5a04ee04ca95?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'
+      // Photo gallery
+      const photos = [
+        "school.jpg",
+        "bd2.jpg",
+        "bed.jpg",
+        "farva.jpg",
+        "filter-d.jpg",
+      ];
+
+      // Create stars background
+      function createStars() {
+        for (let i = 0; i < 200; i++) {
+          const star = document.createElement("div");
+          star.classList.add("star");
+
+          const size = Math.random() * 3 + 1;
+          const opacity = Math.random() * 0.5 + 0.5;
+          const duration = Math.random() * 3 + 2;
+
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          star.style.setProperty("--opacity", opacity);
+          star.style.setProperty("--duration", `${duration}s`);
+
+          stars.appendChild(star);
+        }
+      }
+
+      // Create balloons
+      function createBalloons() {
+        const colors = [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#FFD166",
+          "#06D6A0",
+          "#118AB2",
+          "#F72585",
         ];
 
-        // Create stars background
-        function createStars() {
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                const size = Math.random() * 3 + 1;
-                const opacity = Math.random() * 0.5 + 0.5;
-                const duration = Math.random() * 3 + 2;
-                
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.setProperty('--opacity', opacity);
-                star.style.setProperty('--duration', `${duration}s`);
-                
-                stars.appendChild(star);
-            }
+        for (let i = 0; i < 10; i++) {
+          const balloon = document.createElement("div");
+          balloon.classList.add("balloon");
+
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 5;
+          const duration = Math.random() * 5 + 10;
+
+          balloon.style.backgroundColor = color;
+          balloon.style.left = `${left}%`;
+          balloon.style.animationDelay = `${delay}s`;
+          balloon.style.animationDuration = `${duration}s`;
+
+          document.body.appendChild(balloon);
+        }
+      }
+
+      // Add cake decorations
+      function addCakeDecorations() {
+        const cakeContainer = document.getElementById("cakeContainer");
+        const colors = ["#FF6B6B", "#4ECDC4", "#FFD166", "#06D6A0", "#118AB2"];
+
+        // Clear previous decorations
+        const existingDecorations =
+          cakeContainer.querySelectorAll(".decoration");
+        existingDecorations.forEach((dec) => dec.remove());
+
+        for (let i = 0; i < 20; i++) {
+          const decoration = document.createElement("div");
+          decoration.classList.add("decoration");
+
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const size = Math.random() * 10 + 5;
+          let top, left;
+
+          // Distribute decorations on different cake layers
+          const layer = Math.floor(Math.random() * 3);
+          if (layer === 0) {
+            // bottom layer
+            top = Math.random() * 80 + 10;
+            left = Math.random() * 200 + 25;
+          } else if (layer === 1) {
+            // middle layer
+            top = Math.random() * 70 + 110;
+            left = Math.random() * 160 + 45;
+          } else {
+            // top layer
+            top = Math.random() * 50 + 190;
+            left = Math.random() * 110 + 70;
+          }
+
+          decoration.style.backgroundColor = color;
+          decoration.style.width = `${size}px`;
+          decoration.style.height = `${size}px`;
+          decoration.style.top = `${top}px`;
+          decoration.style.left = `${left}px`;
+
+          cakeContainer.appendChild(decoration);
+        }
+      }
+
+      // Create confetti
+      function createConfetti() {
+        const colors = [
+          "#FF6B6B",
+          "#4ECDC4",
+          "#FFD166",
+          "#06D6A0",
+          "#118AB2",
+          "#F72585",
+        ];
+
+        for (let i = 0; i < 150; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 3;
+          const duration = Math.random() * 3 + 2;
+          const size = Math.random() * 10 + 5;
+          const shape = Math.random() > 0.5 ? "50%" : "0";
+
+          confetti.style.backgroundColor = color;
+          confetti.style.left = `${left}%`;
+          confetti.style.width = `${size}px`;
+          confetti.style.height = `${size}px`;
+          confetti.style.borderRadius = shape;
+          confetti.style.animationDelay = `${delay}s`;
+          confetti.style.animationDuration = `${duration}s`;
+
+          document.body.appendChild(confetti);
+
+          // Remove confetti after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, duration * 1000 + delay * 1000);
+        }
+      }
+
+      // Change scene
+      function changeScene(newScene) {
+        // Hide all scenes first
+        document.querySelectorAll(".scene").forEach((scene) => {
+          scene.classList.remove("active");
+        });
+
+        // Show the requested scene
+        if (newScene === "welcome") {
+          welcomeScene.classList.add("active");
+        } else if (newScene === "card") {
+          cardScene.classList.add("active");
+        } else if (newScene === "cake") {
+          cakeScene.classList.add("active");
+          addCakeDecorations();
         }
 
-        // Create balloons
-        function createBalloons() {
-            const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#F72585'];
-            
-            for (let i = 0; i < 10; i++) {
-                const balloon = document.createElement('div');
-                balloon.classList.add('balloon');
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const left = Math.random() * 100;
-                const delay = Math.random() * 5;
-                const duration = Math.random() * 5 + 10;
-                
-                balloon.style.backgroundColor = color;
-                balloon.style.left = `${left}%`;
-                balloon.style.animationDelay = `${delay}s`;
-                balloon.style.animationDuration = `${duration}s`;
-                
-                document.body.appendChild(balloon);
-            }
+        currentScene = newScene;
+      }
+
+      // Toggle audio
+      function toggleAudio() {
+        if (audioPlaying) {
+          bgMusic.pause();
+          audioControl.classList.remove("playing");
+        } else {
+          bgMusic.play();
+          audioControl.classList.add("playing");
+        }
+        audioPlaying = !audioPlaying;
+      }
+
+      // Navigate photos
+      function navigatePhotos(direction) {
+        if (direction === "next") {
+          currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        } else {
+          currentPhotoIndex =
+            (currentPhotoIndex - 1 + photos.length) % photos.length;
         }
 
-        // Add cake decorations
-        function addCakeDecorations() {
-            const cakeContainer = document.getElementById('cakeContainer');
-            const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2'];
-            
-            // Clear previous decorations
-            const existingDecorations = cakeContainer.querySelectorAll('.decoration');
-            existingDecorations.forEach(dec => dec.remove());
-            
-            for (let i = 0; i < 20; i++) {
-                const decoration = document.createElement('div');
-                decoration.classList.add('decoration');
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const size = Math.random() * 10 + 5;
-                let top, left;
-                
-                // Distribute decorations on different cake layers
-                const layer = Math.floor(Math.random() * 3);
-                if (layer === 0) { // bottom layer
-                    top = Math.random() * 80 + 10;
-                    left = Math.random() * 200 + 25;
-                } else if (layer === 1) { // middle layer
-                    top = Math.random() * 70 + 110;
-                    left = Math.random() * 160 + 45;
-                } else { // top layer
-                    top = Math.random() * 50 + 190;
-                    left = Math.random() * 110 + 70;
-                }
-                
-                decoration.style.backgroundColor = color;
-                decoration.style.width = `${size}px`;
-                decoration.style.height = `${size}px`;
-                decoration.style.top = `${top}px`;
-                decoration.style.left = `${left}px`;
-                
-                cakeContainer.appendChild(decoration);
-            }
-        }
+        // Fade out current photo
+        currentPhoto.style.opacity = "0";
 
-        // Create confetti
-        function createConfetti() {
-            const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#F72585'];
-            
-            for (let i = 0; i < 150; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const left = Math.random() * 100;
-                const delay = Math.random() * 3;
-                const duration = Math.random() * 3 + 2;
-                const size = Math.random() * 10 + 5;
-                const shape = Math.random() > 0.5 ? '50%' : '0';
-                
-                confetti.style.backgroundColor = color;
-                confetti.style.left = `${left}%`;
-                confetti.style.width = `${size}px`;
-                confetti.style.height = `${size}px`;
-                confetti.style.borderRadius = shape;
-                confetti.style.animationDelay = `${delay}s`;
-                confetti.style.animationDuration = `${duration}s`;
-                
-                document.body.appendChild(confetti);
-                
-                // Remove confetti after animation
-                setTimeout(() => {
-                    confetti.remove();
-                }, duration * 1000 + delay * 1000);
-            }
-        }
+        // Change photo after fade out
+        setTimeout(() => {
+          currentPhoto.src = photos[currentPhotoIndex];
+          currentPhoto.style.opacity = "1";
+        }, 300);
+      }
 
-        // Change scene
-        function changeScene(newScene) {
-            // Hide all scenes
-            welcomeScene.classList.remove('active');
-            cardScene.classList.remove('active');
-            cakeScene.classList.remove('active');
-            
-            // Show the requested scene
-            if (newScene === 'welcome') {
-                welcomeScene.classList.add('active');
-            } else if (newScene === 'card') {
-                cardScene.classList.add('active');
-            } else if (newScene === 'cake') {
-                cakeScene.classList.add('active');
-                addCakeDecorations();
-            }
-            
-            currentScene = newScene;
-        }
+      // Blow out candle
+      function blowOutCandle() {
+        flame.style.display = "none";
+        blowButton.textContent = "Candle blown out! 🎉";
+        blowButton.disabled = true;
+        candleBlown = true;
+        canBlowCandle = false;
+        createConfetti();
 
-        // Toggle audio
-        function toggleAudio() {
-            if (audioPlaying) {
-                bgMusic.pause();
-                audioControl.classList.remove('playing');
-            } else {
-                bgMusic.play();
-                audioControl.classList.add('playing');
-            }
-            audioPlaying = !audioPlaying;
-        }
+        // Show message box
+        messageBox.classList.add("visible");
 
-        // Navigate photos
-        function navigatePhotos(direction) {
-            if (direction === 'next') {
-                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
-            } else {
-                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
-            }
-            
-            // Fade out current photo
-            currentPhoto.style.opacity = '0';
-            
-            // Change photo after fade out
-            setTimeout(() => {
-                currentPhoto.src = photos[currentPhotoIndex];
-                currentPhoto.style.opacity = '1';
-            }, 300);
-        }
-
-        // Blow out candle
-        function blowOutCandle() {
-            flame.style.display = 'none';
-            blowButton.textContent = 'Candle blown out! 🎉';
-            blowButton.disabled = true;
-            candleBlown = true;
-            canBlowCandle = false;
-            createConfetti();
-            
-            // Show message box
-            messageBox.classList.add('visible');
-            
-            // Replace video placeholder with actual video
-            videoPlaceholder.innerHTML = `
+        // Replace video placeholder with actual video
+        videoPlaceholder.innerHTML = `
                 <video width="100%" height="100%" controls autoplay>
                     <source src="your-video-file.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             `;
-            
-            // Stop microphone if active
-            if (microphoneStream) {
-                microphoneStream.getTracks().forEach(track => track.stop());
-                microphoneStream = null;
-            }
+
+        // Stop microphone if active
+        if (microphoneStream) {
+          microphoneStream.getTracks().forEach((track) => track.stop());
+          microphoneStream = null;
         }
+      }
 
-        // Initialize
-        window.addEventListener('load', function() {
-            // Create stars
-            createStars();
-            
-            // Create balloons
-            createBalloons();
-            
-            // Simulate loading
-            setTimeout(() => {
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
-            }, 3000);
-        });
+      // Initialize
+      window.addEventListener("load", function () {
+        // Create stars
+        createStars();
 
-        // Event Listeners
-        
-        // Audio control
-        audioControl.addEventListener('click', toggleAudio);
+        // Create balloons
+        createBalloons();
 
-        // Start button
-        startButton.addEventListener('click', function() {
-            changeScene('card');
-            createConfetti();
-            
-            // Start music if not playing
-            if (!audioPlaying) {
-                bgMusic.play();
-                audioControl.classList.add('playing');
-                audioPlaying = true;
-            }
-        });
+        // Simulate loading
+        setTimeout(() => {
+          loadingScreen.style.opacity = "0";
+          setTimeout(() => {
+            loadingScreen.style.display = "none";
+          }, 500);
+        }, 3000);
+      });
 
-        // Envelope click - Fixed to make entire envelope clickable
-        envelopeWrapper.addEventListener('click', function() {
-            envelope.classList.add('open');
-            envelopeWrapper.classList.add('open');
-            
-            // Wait for envelope animation to complete
-            setTimeout(() => {
-                card.style.opacity = '1';
-            }, 500);
-        });
+      // Event Listeners
 
-        // Card click - Fixed to make entire card clickable
-        cardWrapper.addEventListener('click', function() {
-            if (envelopeWrapper.classList.contains('open')) {
-                card.classList.add('flipped');
-            }
-        });
+      // Audio control
 
-        // Photo navigation
-        prevPhoto.addEventListener('click', function(e) {
-            e.stopPropagation();
-            navigatePhotos('prev');
-        });
+      // Start button
+      // Replace the existing startButton event listener with this:
+      startButton.addEventListener("click", function () {
+        // First hide the welcome scene
+        welcomeScene.classList.remove("active");
 
-        nextPhoto.addEventListener('click', function(e) {
-            e.stopPropagation();
-            navigatePhotos('next');
-        });
+        // Then show the card scene after a short delay
+        setTimeout(() => {
+          cardScene.classList.add("active");
+          createConfetti();
+        }, 300);
+      });
+      // Envelope click - Fixed to make entire envelope clickable
+      envelopeWrapper.addEventListener("click", function () {
+        envelope.classList.add("open");
+        envelopeWrapper.classList.add("open");
 
-        // Cake button
-        cakeButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            changeScene('cake');
-            createConfetti();
-        });
+        // Wait for envelope animation to complete
+        setTimeout(() => {
+          card.style.opacity = "1";
+        }, 500);
+      });
 
-        // Blow button
-// Replace existing blowButton event listener with:
-blowButton.addEventListener('click', blowOutCandle);
+      // Card click - Fixed to make entire card clickable
+      cardWrapper.addEventListener("click", function () {
+        if (envelopeWrapper.classList.contains("open")) {
+          card.classList.add("flipped");
+        }
+      });
 
-        // Back button
-        backButton.addEventListener('click', function() {
-            changeScene('card');
-        });
+      // Photo navigation
+      prevPhoto.addEventListener("click", function (e) {
+        e.stopPropagation();
+        navigatePhotos("prev");
+      });
+
+      nextPhoto.addEventListener("click", function (e) {
+        e.stopPropagation();
+        navigatePhotos("next");
+      });
+
+      // Cake button
+      cakeButton.addEventListener("click", function (e) {
+        e.stopPropagation();
+        changeScene("cake");
+        createConfetti();
+      });
+
+      // Blow button
+      // Replace existing blowButton event listener with:
+      blowButton.addEventListener("click", blowOutCandle);
+
+      // Back button
+      // Replace the existing backButton event listener with:
+      backButton.addEventListener("click", function () {
+        cakeScene.classList.remove("active");
+        cardScene.classList.add("active");
+      });
     </script>
-</body>
+  </body>
 </html>
